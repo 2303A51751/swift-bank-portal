@@ -1,13 +1,57 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { BankProvider } from '@/context/BankContext';
+import WelcomeScreen from '@/components/banking/WelcomeScreen';
+import LoginScreen from '@/components/banking/LoginScreen';
+import RegisterScreen from '@/components/banking/RegisterScreen';
+import Dashboard from '@/components/banking/Dashboard';
+
+type Screen = 'welcome' | 'login' | 'register' | 'dashboard';
+
+const BankingApp = () => {
+  const [currentScreen, setCurrentScreen] = useState<Screen>('welcome');
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'welcome':
+        return (
+          <WelcomeScreen
+            onLogin={() => setCurrentScreen('login')}
+            onRegister={() => setCurrentScreen('register')}
+          />
+        );
+      case 'login':
+        return (
+          <LoginScreen
+            onBack={() => setCurrentScreen('welcome')}
+            onSuccess={() => setCurrentScreen('dashboard')}
+          />
+        );
+      case 'register':
+        return (
+          <RegisterScreen
+            onBack={() => setCurrentScreen('welcome')}
+            onSuccess={() => setCurrentScreen('welcome')}
+          />
+        );
+      case 'dashboard':
+        return (
+          <Dashboard
+            onLogout={() => setCurrentScreen('welcome')}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  return <>{renderScreen()}</>;
+};
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <BankProvider>
+      <BankingApp />
+    </BankProvider>
   );
 };
 
